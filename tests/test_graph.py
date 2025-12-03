@@ -21,6 +21,7 @@ import itertools
 import json
 import sys
 
+from pyzx.graph.canonical import structure_hash
 from pyzx.graph.graph_s import GraphS
 
 if __name__ == "__main__":
@@ -276,3 +277,5 @@ def test_graph_s():
     set_graph.add(g)
     set_graph.add(g_copy)
     assert len(set_graph) == 1
+
+    assert structure_hash(g) == structure_hash(g_copy)

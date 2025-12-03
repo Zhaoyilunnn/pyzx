@@ -18,7 +18,6 @@ from fractions import Fraction
 from typing import Optional, Tuple, Dict, Set, Any
 
 from .base import BaseGraph
-from .canonical import structure_hash
 
 from ..utils import (
     VertexType,
@@ -58,6 +57,8 @@ class GraphS(BaseGraph[int, Tuple[int, int]]):
         self._outputs: Tuple[int, ...] = tuple()
 
     def __hash__(self) -> int:
+        from .canonical import structure_hash
+
         return structure_hash(self)
 
     def __eq__(self, other) -> bool:

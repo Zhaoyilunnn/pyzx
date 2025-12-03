@@ -18,6 +18,7 @@ from fractions import Fraction
 from typing import Optional, Tuple, Dict, Set, Any
 
 from .base import BaseGraph
+from .canonical import structure_hash
 
 from ..utils import (
     VertexType,
@@ -57,54 +58,12 @@ class GraphS(BaseGraph[int, Tuple[int, int]]):
         self._outputs: Tuple[int, ...] = tuple()
 
     def __hash__(self) -> int:
-        """
-        Hash function for the graph.
-        Do not guarantee that different graphs have different hashes.
-        """
-        h = 0
-        for v in self.graph:
-            h ^= hash(
-                (
-                    v,
-                    self.ty[v],
-                    self._phase.get(v, Fraction(1)),
-                    self._qindex.get(v, -1),
-                    self._rindex.get(v, -1),
-                )
-            )
-            for w in self.graph[v]:
-                if v < w:
-                    h ^= hash((v, w, self.graph[v][w]))
-        return h
+        return structure_hash(self)
 
     def __eq__(self, other) -> bool:
-        """
-        Equality function for the graph.
-        Two graphs are equal if they have the same structure and vertex/edge data.
-        """
         if not isinstance(other, GraphS):
             return False
-        if self.num_vertices() != other.num_vertices():
-            return False
-        if self.num_edges() != other.num_edges():
-            return False
-        for v in self.graph:
-            if v not in other.graph:
-                return False
-            if self.ty[v] != other.ty[v]:
-                return False
-            if self._phase.get(v, Fraction(1)) != other._phase.get(v, Fraction(1)):
-                return False
-            if self._qindex.get(v, -1) != other._qindex.get(v, -1):
-                return False
-            if self._rindex.get(v, -1) != other._rindex.get(v, -1):
-                return False
-            if set(self.graph[v].keys()) != set(other.graph[v].keys()):
-                return False
-            for w in self.graph[v]:
-                if self.graph[v][w] != other.graph[v][w]:
-                    return False
-        return True
+        return self.__hash__() == other.__hash__()
 
     def clone(self) -> "GraphS":
         cpy = GraphS()

@@ -6,7 +6,7 @@ from fractions import Fraction
 from typing import Any, Dict, Tuple
 
 from .graph_s import GraphS
-from ..utils import VertexType, EdgeType
+from ..utils import EdgeType
 
 
 def _norm_phase(g: GraphS, v: int):
